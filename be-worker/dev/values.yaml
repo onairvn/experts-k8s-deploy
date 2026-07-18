@@ -1,0 +1,49 @@
+# experts-be-worker dev — BullMQ worker (CMD overridden via deployment.args)
+global:
+  project: experts
+  image:
+    registry: registry-hn02.fke.fptcloud.com
+    pullPolicy: IfNotPresent
+    pullSecret: fke-registry
+  labels:
+    app.kubernetes.io/component: be-worker
+
+deployment:
+  replicaCount: 1
+  args: ["node", "dist/bootstrap/worker.js"]
+  envFrom:
+    - secretRef:
+        name: experts-be-env
+  environments:
+    APP_ROLE: worker
+    HEALTH_PORT: "4101"
+  containers:
+    - name: worker
+      repository: 344af395-857e-4e68-83ea-3972784eb4cb/experts-be
+      tag: dev-000000
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 1024Mi
+        requests:
+          cpu: 50m
+          memory: 256Mi
+      livenessHttpGet: /healthz
+      readinessHttpGet: /readyz
+      failureThreshold: 6
+      initialDelaySeconds: 25
+      ports:
+        - name: http
+          value: 4101
+
+secret:
+  enabled: false
+ingress:
+  enabled: false
+nodeSelector: {}
+tolerations: []
+affinity: {}
+pvc:
+  enabled: false
+pv:
+  enabled: false

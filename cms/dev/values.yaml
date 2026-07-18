@@ -1,0 +1,56 @@
+# experts-cms dev — Vite build served by nginx (env baked at build time)
+global:
+  project: experts
+  image:
+    registry: registry-hn02.fke.fptcloud.com
+    pullPolicy: IfNotPresent
+    pullSecret: fke-registry
+  labels:
+    app.kubernetes.io/component: cms
+
+deployment:
+  replicaCount: 1
+  containers:
+    - name: cms
+      repository: 344af395-857e-4e68-83ea-3972784eb4cb/experts-cms
+      tag: dev-000000
+      resources:
+        limits:
+          cpu: 300m
+          memory: 128Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
+      livenessHttpGet: /
+      readinessHttpGet: /
+      failureThreshold: 3
+      initialDelaySeconds: 5
+      ports:
+        - name: http
+          value: 80
+
+secret:
+  enabled: false
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+  rules:
+    - host: cms.experts-dev.onair.today
+      paths:
+        - path: /
+          port: 80
+  tls:
+    - secretName: cms-experts-dev-onair-today-tls
+      hosts:
+        - cms.experts-dev.onair.today
+nodeSelector: {}
+tolerations: []
+affinity: {}
+pvc:
+  enabled: false
+pv:
+  enabled: false

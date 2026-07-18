@@ -1,0 +1,64 @@
+# experts-be-api dev — NestJS HTTP API (default CMD `node dist/main.js`)
+global:
+  project: experts
+  image:
+    registry: registry-hn02.fke.fptcloud.com
+    pullPolicy: IfNotPresent
+    pullSecret: fke-registry
+  labels:
+    app.kubernetes.io/component: be-api
+
+deployment:
+  replicaCount: 1
+  envFrom:
+    - secretRef:
+        name: experts-be-env
+  environments:
+    APP_ROLE: api
+    HEALTH_PORT: "0"
+  containers:
+    - name: api
+      repository: 344af395-857e-4e68-83ea-3972784eb4cb/experts-be
+      tag: dev-000000
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 1024Mi
+        requests:
+          cpu: 50m
+          memory: 256Mi
+      livenessHttpGet: /health-check
+      readinessHttpGet: /health-check
+      failureThreshold: 6
+      initialDelaySeconds: 25
+      ports:
+        - name: http
+          value: 3000
+
+secret:
+  enabled: false
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+  rules:
+    - host: api.experts-dev.onair.today
+      paths:
+        - path: /
+          port: 3000
+  tls:
+    - secretName: api-experts-dev-onair-today-tls
+      hosts:
+        - api.experts-dev.onair.today
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+pvc:
+  enabled: false
+pv:
+  enabled: false

@@ -1,0 +1,62 @@
+# experts-fe dev — Next.js standalone (NEXT_PUBLIC_* baked at build; BACKEND_URL at runtime)
+global:
+  project: experts
+  image:
+    registry: registry-hn02.fke.fptcloud.com
+    pullPolicy: IfNotPresent
+    pullSecret: fke-registry
+  labels:
+    app.kubernetes.io/component: fe
+
+deployment:
+  replicaCount: 1
+  environments:
+    NODE_ENV: production
+    HOSTNAME: "0.0.0.0"
+    PORT: "3000"
+    BACKEND_URL: http://experts-be-api.experts-dev.svc.cluster.local:3000
+    NEXT_PUBLIC_API_URL: /api
+  containers:
+    - name: fe
+      repository: 344af395-857e-4e68-83ea-3972784eb4cb/experts-fe
+      tag: dev-000000
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 50m
+          memory: 128Mi
+      livenessHttpGet: /
+      readinessHttpGet: /
+      failureThreshold: 6
+      initialDelaySeconds: 15
+      ports:
+        - name: http
+          value: 3000
+
+secret:
+  enabled: false
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+  rules:
+    - host: experts-dev.onair.today
+      paths:
+        - path: /
+          port: 3000
+  tls:
+    - secretName: experts-dev-onair-today-tls
+      hosts:
+        - experts-dev.onair.today
+nodeSelector: {}
+tolerations: []
+affinity: {}
+pvc:
+  enabled: false
+pv:
+  enabled: false
