@@ -1,0 +1,49 @@
+# HPA cho experts-be-api (prod).
+# CHỈ áp dụng cho be-api. KHÔNG tạo HPA cho be-scheduler (nhân bản = cron chạy trùng,
+# ví dụ hoàn tiền hai lần) và be-worker (chưa xác minh job idempotent).
+#
+# Ngưỡng tính theo `requests` chứ không phải `limits`:
+#   be-api requests = cpu 100m, memory 320Mi
+#   → CPU 70%  ≈ 70m
+#   → RAM 80%  ≈ 256Mi
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: experts-be-api
+  namespace: experts-prod
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: experts-be-api
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+  behavior:
+    scaleUp:
+      # Phản ứng nhanh khi tải tăng, nhưng không nở quá 1 pod mỗi phút
+      stabilizationWindowSeconds: 60
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 60
+    scaleDown:
+      # Thu chậm: Node giữ heap nên RAM không tụt ngay sau khi hết tải.
+      # 5 phút tránh nở/thu liên tục.
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 120

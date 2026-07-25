@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: experts-prod-hpa
+  namespace: argocd
+spec:
+  project: default
+  revisionHistoryLimit: 5
+  destination:
+    namespace: experts-prod
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/onairvn/experts-k8s-deploy.git
+    targetRevision: main
+    path: hpa/prod
+    directory:
+      recurse: false
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
