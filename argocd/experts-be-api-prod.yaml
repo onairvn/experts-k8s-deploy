@@ -10,25 +10,30 @@ spec:
     namespace: experts-prod
     server: https://kubernetes.default.svc
   ignoreDifferences:
-    - group: apps
-      kind: Deployment
-      jsonPointers:
-        - /spec/replicas
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+    - /spec/replicas
   sources:
-    - chart: lemon
-      repoURL: https://nguyencuong382.github.io/k8s-helm-chart
-      targetRevision: 1.1.4
-      helm:
-        releaseName: experts-be-api
-        valueFiles:
-          - $values/be-api/prod/values.yaml
-    - repoURL: https://github.com/onairvn/experts-k8s-deploy.git
-      targetRevision: main
-      ref: values
+  - chart: lemon
+    repoURL: https://nguyencuong382.github.io/k8s-helm-chart
+    targetRevision: 1.1.4
+    helm:
+      releaseName: experts-be-api
+      valueFiles:
+      - $values/be-api/prod/values.yaml
+  - repoURL: https://github.com/onairvn/experts-k8s-deploy.git
+    targetRevision: main
+    ref: values
+  - repoURL: https://github.com/onairvn/experts-k8s-deploy.git
+    targetRevision: main
+    path: migrate/prod
+    directory:
+      recurse: false
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=false
-      - RespectIgnoreDifferences=true
+    - CreateNamespace=false
+    - RespectIgnoreDifferences=true
