@@ -177,6 +177,11 @@ deployment:
       secretKeyRef:
         name: experts-be-env
         key: S3_BUCKET_PUBLIC
+  - name: S3_PUBLIC_URL
+    valueFrom:
+      secretKeyRef:
+        name: experts-be-env
+        key: S3_PUBLIC_URL
   - name: S3_REGION
     valueFrom:
       secretKeyRef:
