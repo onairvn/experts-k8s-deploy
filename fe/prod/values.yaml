@@ -10,7 +10,7 @@ global:
     app.kubernetes.io/component: fe
 
 deployment:
-  replicaCount: 2
+  replicaCount: 1
   environments:
     NODE_ENV: production
     HOSTNAME: "0.0.0.0"

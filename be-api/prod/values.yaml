@@ -10,7 +10,7 @@ global:
   labels:
     app.kubernetes.io/component: be-api
 deployment:
-  replicaCount: 2
+  replicaCount: 1
   envFrom:
   - name: API_URL
     valueFrom:
