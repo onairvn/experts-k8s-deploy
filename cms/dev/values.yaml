@@ -13,7 +13,7 @@ deployment:
   containers:
     - name: cms
       repository: 344af395-857e-4e68-83ea-3972784eb4cb/experts-cms
-      tag: dev-6-9bc70b0
+      tag: dev-7-f3d849f
       resources:
         limits:
           cpu: 300m
