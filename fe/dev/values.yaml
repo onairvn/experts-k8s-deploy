@@ -19,7 +19,7 @@ deployment:
   containers:
     - name: fe
       repository: 344af395-857e-4e68-83ea-3972784eb4cb/experts-fe
-      tag: dev-13-6d58bfd
+      tag: dev-14-aff75bc
       resources:
         limits:
           cpu: 500m
