@@ -258,7 +258,7 @@ deployment:
   containers:
   - name: worker
     repository: 344af395-857e-4e68-83ea-3972784eb4cb/experts-be
-    tag: dev-25-ead3003
+    tag: dev-26-506ef87
     resources:
       limits:
         cpu: 1000m
