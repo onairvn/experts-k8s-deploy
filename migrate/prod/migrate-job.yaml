@@ -80,7 +80,7 @@ spec:
             requests: { cpu: 50m, memory: 64Mi }
       containers:
         - name: migrate
-          image: registry-hn02.fke.fptcloud.com/344af395-857e-4e68-83ea-3972784eb4cb/experts-be-migrate:prod-10-86975c5
+          image: registry-hn02.fke.fptcloud.com/344af395-857e-4e68-83ea-3972784eb4cb/experts-be-migrate:prod-11-ad37c87
           envFrom:
             - secretRef:
                 name: experts-be-env
