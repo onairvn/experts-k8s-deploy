@@ -255,7 +255,7 @@ deployment:
   containers:
   - name: api
     repository: 344af395-857e-4e68-83ea-3972784eb4cb/experts-be
-    tag: dev-36-3ce93bb
+    tag: dev-37-bd492e8
     resources:
       limits:
         cpu: 1000m
