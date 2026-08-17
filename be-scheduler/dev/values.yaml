@@ -258,7 +258,7 @@ deployment:
   containers:
   - name: scheduler
     repository: 344af395-857e-4e68-83ea-3972784eb4cb/experts-be
-    tag: dev-40-4bf200b
+    tag: dev-41-4edaa84
     resources:
       limits:
         cpu: 500m
